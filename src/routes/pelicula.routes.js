@@ -1,5 +1,6 @@
 const express = require("express");
-const { listar, top, obtener, resenas, crear, actualizar, eliminar, crearResena } = require("../controller/pelicula.controller.js");
+const { validarEstadisticas, validar } = require("../validators/pelicula.validator.js");
+const { listar, top, estadisticas, obtener, resenas, crear, actualizar, eliminar, crearResena } = require("../controller/pelicula.controller.js");
 const validarId = require("../middlewares/validarId.js");
 const autenticar = require("../middlewares/autenticar.js");
 const autorizar = require("../middlewares/autorizar.js");
@@ -32,6 +33,42 @@ const router = express.Router();
 router.get("/", listar);
 
 router.get("/top", top);
+
+/**
+ * @openapi
+ * /peliculas/estadisticas:
+ *   get:
+ *     tags: [Películas]
+ *     summary: Total de películas y nota media por género, ordenado por nota media descendente
+ *     parameters:
+ *       - name: minimo
+ *         in: query
+ *         required: false
+ *         description: Número mínimo de películas que debe tener un género para aparecer
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 50
+ *           default: 1
+ *           example: 2
+ *     responses:
+ *       200:
+ *         description: Estadísticas por género
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/EstadisticaGenero'
+ *       400:
+ *         description: Parámetro minimo no válido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorValidacion'
+ */
+router.get("/estadisticas", validarEstadisticas, validar, estadisticas);
+
 router.post("/:id/resenas",autenticar,  validarId, crearResena);
 router.get("/:id", validarId, obtener);
 router.get("/:id/resenas", validarId, resenas);

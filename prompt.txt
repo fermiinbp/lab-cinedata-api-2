@@ -1,0 +1,10 @@
+Issue #1 de lab-cinedata-api: quiero estadísticas por género.
+Añade GET /peliculas/estadisticas en la API (por cada género: total de películas y nota media,
+ordenado por nota media; query opcional ?minimo=N entre 1 y 50, validada con express-validator
+y documentada con @openapi) y una página Estadísticas en cinedata-cors que lo pinte.
+
+Trabaja SOLO como orquestador y delega en este orden: analista → back → front → qa → seguridad → revisor.
+Antes de que empiece back, crea la rama ISSUEN-estadisticas-por-genero en los dos repos.
+Pásale a cada agente lo que necesite del anterior.
+El revisor abre una PR en cada repo: la de la API con "Closes #1" y la de la web con
+"Refs fermiinbp/lab-cinedata-api-2#1". No hagas merge: la revisión final es humana.

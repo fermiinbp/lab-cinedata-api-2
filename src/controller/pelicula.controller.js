@@ -35,6 +35,12 @@ async function top(req, res) {
     res.json(peliculas.map(p => p.resumen()));
 }
 
+async function estadisticas(req, res) {
+    const minimo = Number(req.query.minimo ?? 1);
+    const datos = await peliculasService.estadisticasPorGenero(minimo);
+    res.json(datos);
+}
+
 async function obtener(req, res) {
     const pelicula = await peliculasService.buscarPorId(req.params.id);
     if (!pelicula) {
@@ -85,4 +91,4 @@ async function crearResena(req, res){
 
 }
 
-module.exports = { listar, top, obtener, resenas, crear, actualizar, eliminar, crearResena };
+module.exports = { listar, top, estadisticas, obtener, resenas, crear, actualizar, eliminar, crearResena };

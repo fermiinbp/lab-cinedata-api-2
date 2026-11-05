@@ -47,6 +47,14 @@ const opciones = {
                         disponible: { type: "boolean", example: true }
                     }
                 },
+                EstadisticaGenero: {
+                    type: "object",
+                    properties: {
+                        genero: { type: "string", example: "Drama" },
+                        total: { type: "integer", example: 12 },
+                        notaMedia: { type: "number", example: 8.35 }
+                    }
+                },
                 Error: {
                     type: "object",
                     properties: {
@@ -64,7 +72,7 @@ const opciones = {
             }
         }
     },
-       apis: [path.join(__dirname, '../routes/*.js')]
+       apis: [path.join(__dirname, '../routes/*.js').split(path.sep).join('/')]
 };
 
 module.exports = swaggerJsdoc(opciones);       
