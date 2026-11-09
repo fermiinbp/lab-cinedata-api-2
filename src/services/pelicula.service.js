@@ -6,8 +6,7 @@ function construirFiltro({genero, anioDesde, notaMin, disponible}){
     if (genero) filtro.generos = genero;
     if (anioDesde) filtro.anio = {$gte: anioDesde};
     if (notaMin) filtro.nota = {$gte: notaMin};
-    if (disponible !== undefined) {filtro.disponible = disponible === "true";
-    console.log(disponible);}
+    if (disponible !== undefined) filtro.disponible = disponible === "true";
     return filtro; 
 }
 
@@ -59,11 +58,21 @@ async function estadisticasPorGenero(minimo = 1) {
     ]);
 }
 
+// Títulos que contienen el texto (sin distinguir mayúsculas), del más reciente al más antiguo
+async function buscarPorTitulo(texto, limite = 20) {
+    return Pelicula.find({ titulo: { $regex: escaparRegex(texto), $options: "i" } })
+        .sort({ anio: -1, titulo: 1 })
+        .limit(limite);
+}
+
 // FUNCIONES AUXILIARES
 function esIdValido(id) {
     return mongoose.isValidObjectId(id);
 }
 
+// Evita que el texto del usuario se interprete como regex
+function escaparRegex(texto) {
+    return texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-
-module.exports = { listar, mejores, buscarPorId, esIdValido, crear, actualizar, eliminar, estadisticasPorGenero };
+module.exports = { listar, mejores, buscarPorId, esIdValido, crear, actualizar, eliminar, estadisticasPorGenero, buscarPorTitulo };

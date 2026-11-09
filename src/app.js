@@ -8,8 +8,11 @@ const manejarErrores = require("./middlewares/manejarErrores.js");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger.js");
 const cors = require("cors");
+const helmet = require("helmet");
 
 const app = express();
+
+app.use(helmet());
 
 const origenesPermitidos = (process.env.CORS_ORIGIN || "")
     .split(",")

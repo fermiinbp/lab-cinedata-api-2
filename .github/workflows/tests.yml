@@ -1,0 +1,27 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # Valores ficticios: los tests no usan base de datos ni secretos reales
+    env:
+      CORS_ORIGIN: http://localhost:5500
+      JWT_SECRET: secreto-solo-para-ci
+      JWT_EXPIRES_IN: 1h
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test

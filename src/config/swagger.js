@@ -15,6 +15,9 @@ const opciones = {
             { name: "Usuarios", description: "Usuarios que esriben reseñas" }
         ],
         components: {
+            securitySchemes: {
+                bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" }
+            },
             parameters: {
                 Id: {
                     name: "id",

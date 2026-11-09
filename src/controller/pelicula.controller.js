@@ -1,3 +1,4 @@
+const { matchedData } = require("express-validator");
 const peliculasService = require("../services/pelicula.service.js");
 const resenasService = require("../services/resena.service.js");
 
@@ -12,7 +13,7 @@ async function listar(req, res) {
     const pagina = Math.max(parseInt(req.query.page) || 1, 1) ;
     const limite = Math.min(Math.max(parseInt(req.query.limit) || 10, 1 ), 50);
 
-    if (!ORDENES[orden]) {
+    if (!Object.hasOwn(ORDENES, orden)) {
         return res.status(400).json({error: ` Orden no valido. Usa: ${Object.keys(ORDENES).join(', ')}` });
     }
 
@@ -35,6 +36,13 @@ async function top(req, res) {
     res.json(peliculas.map(p => p.resumen()));
 }
 
+async function buscar(req, res) {
+    // En Express 5 req.query es de solo lectura: el valor recortado por trim() está en matchedData
+    const { q } = matchedData(req, { locations: ["query"] });
+    const peliculas = await peliculasService.buscarPorTitulo(q);
+    res.json(peliculas.map(p => p.resumen()));
+}
+
 async function estadisticas(req, res) {
     const minimo = Number(req.query.minimo ?? 1);
     const datos = await peliculasService.estadisticasPorGenero(minimo);
@@ -51,16 +59,16 @@ async function obtener(req, res) {
 
 // POST/ peliculas
 async function crear(req, res) {
-    const pelicula = await peliculasService.crear(req.body);
+    const pelicula = await peliculasService.crear(matchedData(req, { locations: ["body"] }));
     res.status(201).json(pelicula);
 } 
 
 // PUT /peliculas/:id
 
 async function actualizar(req, res) {
-    const pelicula = await peliculasService.actualizar(req.params.id, req.body);
+    const pelicula = await peliculasService.actualizar(req.params.id, matchedData(req, { locations: ["body"] }));
     if (!pelicula) {
-        return res.status(404).json({error: "PElicula not found"});
+        return res.status(404).json({error: "Película no encontrada"});
     }
     res.json(pelicula);
 }
@@ -70,7 +78,7 @@ async function actualizar(req, res) {
 async function eliminar(req, res) {
     const pelicula = await peliculasService.eliminar(req.params.id);
     if (!pelicula) {
-        return res.status(404).json({error: "PElicula not found"});
+        return res.status(404).json({error: "Película no encontrada"});
     }
     res.status(204).end();
 }
@@ -91,4 +99,4 @@ async function crearResena(req, res){
 
 }
 
-module.exports = { listar, top, estadisticas, obtener, resenas, crear, actualizar, eliminar, crearResena };
+module.exports = { listar, top, buscar, estadisticas, obtener, resenas, crear, actualizar, eliminar, crearResena };

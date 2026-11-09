@@ -2,3 +2,6 @@
 node_modules
 demo-modulos
 .claude/settings.local.json
+CLAUDE.md  
+AGENTS.md
+coverage/
